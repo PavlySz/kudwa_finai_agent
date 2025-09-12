@@ -1,0 +1,63 @@
+"""
+Financial AI Backend - Main Application Entry Point
+"""
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from src.config.settings import settings
+from src.config.database import init_db
+from src.api import health
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Application lifespan manager for startup and shutdown events
+    """
+    # Startup
+    print("Starting Financial AI Backend...")
+    await init_db()
+    yield
+    # Shutdown
+    print("Shutting down Financial AI Backend...")
+
+
+# Create FastAPI application
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description="AI-powered financial data processing and analysis system",
+    lifespan=lifespan,
+)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routers
+app.include_router(health.router, tags=["health"])
+
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {
+        "message": "Financial AI Backend API",
+        "version": settings.APP_VERSION,
+        "docs": "/docs",
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "main:app", host=settings.HOST, port=settings.PORT, reload=settings.DEBUG
+    )

@@ -1,0 +1,13 @@
+# Ignore cache and history files
+__pycache__/
+.history/
+
+# Ignore environment variables
+*.env
+
+# Ignore markdown files (used for project planning) except README.md
+*.md
+!README.md
+
+# Ignore data folder
+data/
