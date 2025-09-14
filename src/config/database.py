@@ -26,7 +26,7 @@ async def init_db():
     """
     async with engine.begin() as conn:
         # Import all models here to ensure they're registered
-        from src.models import base
+        from src.models import base, financial
 
         # Create all tables
         await conn.run_sync(Base.metadata.create_all)

@@ -16,3 +16,4 @@ python-multipart==0.0.6
 # Development
 pytest==7.4.3
 httpx==0.25.2
+requests==2.31.0

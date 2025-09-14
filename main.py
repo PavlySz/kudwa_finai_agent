@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 
 from src.config.settings import settings
 from src.config.database import init_db
-from src.api import health
+from src.api import health, data_import
 
 
 @asynccontextmanager
@@ -43,6 +43,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(health.router, tags=["health"])
+app.include_router(data_import.router, tags=["data"])
 
 
 @app.get("/")
