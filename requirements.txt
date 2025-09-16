@@ -8,6 +8,14 @@ pydantic-settings==2.1.0
 sqlalchemy==2.0.23
 aiosqlite==0.19.0
 
+# AI/LLM dependencies
+langchain
+langchain-openai
+langchain-anthropic
+langchain-google-genai  # Just in case
+tiktoken  # Token counting
+redis  # For caching (optional)
+
 # Utilities
 python-dotenv==1.0.0
 pandas==2.1.3
