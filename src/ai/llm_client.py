@@ -268,6 +268,14 @@ class MultiModelClient:
 
         try:
             result = await structured_model.ainvoke(messages, **kwargs)
+            # Ensure result is an instance of the schema, not a dict
+            if isinstance(result, dict):
+                try:
+                    # Try to instantiate the schema with the dict
+                    return output_schema(**result)
+                except:
+                    # If that fails, return as is
+                    pass
             return result
         except Exception as e:
             logger.error(f"Error parsing structured output: {str(e)}")

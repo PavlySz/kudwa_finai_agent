@@ -194,6 +194,10 @@ class QueryProcessor:
             output_schema=ParsedQuery,
             model_override=settings.COMPLEX_QUERY_MODEL,  # Use better model for parsing
         )
+        
+        # Ensure result is a ParsedQuery instance
+        if isinstance(result, dict):
+            result = ParsedQuery(**result)
 
         # Post-process time periods
         if result.time_period and not result.time_start:
