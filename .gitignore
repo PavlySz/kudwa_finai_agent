@@ -11,3 +11,4 @@ data/
 # Ignore markdown files (used for project planning) except README.md
 *.md
 !README.md
+!TECHNICAL_REPORT_AND_USER_GUIDE.md
