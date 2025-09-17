@@ -49,3 +49,5 @@ scikit-learn
 sqlalchemy
 tiktoken
 uvicorn[standard]
+psycopg2-binary
+asyncpg
