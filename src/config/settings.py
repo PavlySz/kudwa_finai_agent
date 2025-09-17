@@ -15,6 +15,7 @@ API keys are stored in a file called `keys.env`
 from pydantic_settings import BaseSettings
 from typing import Optional, Literal
 from enum import Enum
+from pydantic import computed_field
 
 
 class ModelName(str, Enum):
@@ -38,6 +39,18 @@ class Settings(BaseSettings):
     # Server
     HOST: str = "0.0.0.0"
     PORT: int = 5000
+
+    # Deployment Configuration
+    USE_REPLIT: bool = False  # Set to True when deploying on Replit
+
+    @computed_field
+    @property
+    def API_URL(self) -> str:
+        return (
+            "https://pavly-kudwa-finai-agent.replit.app"
+            if self.USE_REPLIT
+            else "http://localhost:8000"
+        )
 
     # Database
     DATABASE_URL: str = "sqlite+aiosqlite:///./financial_data.db"

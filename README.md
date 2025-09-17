@@ -139,13 +139,28 @@ OPENAI_API_KEY=your-openai-api-key
 ANTHROPIC_API_KEY=your-anthropic-api-key
 ```
 
-### 5. Initialize Database
+### 5. Configure Deployment Mode
+
+The system can run locally or on Replit. In `src/config/settings.py`, set:
+
+```python
+USE_REPLIT = False  # Set to True when deploying on Replit
+```
+
+This automatically configures the API URL:
+
+- Local: `http://localhost:8000`
+- Replit: `https://pavly-kudwa-finai-agent.replit.app`
+
+All test scripts will use the configured URL automatically.
+
+### 6. Initialize Database
 
 ```bash
 python -c "from main import init_db; import asyncio; asyncio.run(init_db())"
 ```
 
-### 6. Import Sample Data
+### 7. Import Sample Data
 
 ```bash
 # Import QuickBooks data
@@ -159,13 +174,13 @@ curl -X POST http://localhost:8000/api/data/import/rootfi \
   -d @data_set_2.json
 ```
 
-### 7. Run the Server
+### 8. Run the Server
 
 ```bash
 python main.py
 ```
 
-The server will start at `http://localhost:8000`
+The server will start at the configured URL (local or Replit based on settings)
 
 ## Example Usage
 
@@ -232,6 +247,21 @@ pytest tests/
 
 ```bash
 python tests/test_evaluation_api.py
+```
+
+### Test Chat Interface
+
+The chat test script automatically uses the configured API URL:
+
+```bash
+# Will use localhost:8000 or Replit URL based on settings
+python test_chat.py
+```
+
+### Test Analytics Features
+
+```bash
+python test_analytics.py
 ```
 
 ### Test Specific Components
@@ -495,3 +525,32 @@ kudwa_assessment/
 - Change data capture from source systems
 
 These improvements would transform the POC into a production-ready, enterprise-grade financial intelligence platform. The modular architecture allows for incremental implementation based on business priorities and resource availability.
+
+## Deployment
+
+### Replit Deployment
+
+The system is currently deployed on Replit at: https://pavly-kudwa-finai-agent.replit.app
+
+To use the Replit deployment:
+
+1. Set `USE_REPLIT = True` in `src/config/settings.py`
+2. All test scripts will automatically use the Replit URL
+3. API documentation available at: https://pavly-kudwa-finai-agent.replit.app/docs
+
+### Switching Between Local and Replit
+
+The deployment mode is controlled by a single setting:
+
+```python
+# src/config/settings.py
+USE_REPLIT = False  # Local development
+# or
+USE_REPLIT = True   # Replit deployment
+```
+
+This affects:
+
+- API URL used by all test scripts
+- CORS settings (if configured)
+- Database location (if different)

@@ -1,85 +1,95 @@
 """
-Test script for forecasting and anomaly detection features
+Test analytics features (forecasting and anomaly detection).
+Can be used both locally and on Replit deployment.
 """
+
+import sys
+
+sys.path.append(".")
 
 import requests
 import json
-from datetime import datetime
+from src.config.settings import settings
 
-BASE_URL = "http://localhost:8000"
+# Use the configured API URL (local or Replit)
+API_URL = settings.API_URL
 
 
-def test_analytics_query(query: str, feature_type: str):
-    """Test an analytics query"""
+def test_analytics():
+    """Test forecasting and anomaly detection features"""
     print(f"\n{'='*60}")
-    print(f"{feature_type.upper()} TEST")
-    print(f"Query: {query}")
-    print(f"{'='*60}")
+    print("ANALYTICS FEATURES TEST")
+    print(f"API URL: {API_URL}")
+    print(f"{'='*60}\n")
 
-    response = requests.post(
-        f"{BASE_URL}/api/queries/natural",
-        json={
-            "query": query,
-            "session_id": f"test-analytics-{datetime.now().strftime('%Y%m%d%H%M%S')}",
-        },
-    )
-
-    if response.status_code == 200:
-        data = response.json()
-        print(f"✓ Success!")
-        print(f"\nAnswer: {data.get('answer', 'No answer')}")
-
-        # Check if forecast/anomaly data was processed
-        metadata = data.get("metadata", {})
-        print(f"\nDetected Intent: {metadata.get('intent')}")
-
-        if data.get("key_insights"):
-            print("\nKey Insights:")
-            for insight in data["key_insights"]:
-                print(f"  - {insight}")
-
-        if data.get("supporting_data"):
-            print("\nSupporting Data Available:")
-            for key in data["supporting_data"]:
-                print(f"  - {key}")
-    else:
-        print(f"✗ Error {response.status_code}: {response.text}")
-
-
-def main():
-    print("Testing AI Analytics Features")
-    print("=" * 60)
-
-    # Test Forecasting
+    # Test forecasting queries
+    print("\n--- FORECASTING TESTS ---")
     forecast_queries = [
         "Forecast revenue for the next 3 months",
-        "Predict expenses for next quarter",
-        "What will our profit be next month?",
-        "Project cash flow for Q2 2025",
+        "Predict expenses for Q2 2025",
+        "What will our cash flow be next quarter?",
+        "Project profit margins for the next 6 months",
     ]
 
-    print("\n🔮 TESTING FORECASTING")
+    session_id = "test-analytics-session"
+
     for query in forecast_queries:
-        try:
-            test_analytics_query(query, "Forecast")
-        except Exception as e:
-            print(f"Error: {e}")
+        print(f"\n🔮 {query}")
 
-    # Test Anomaly Detection
+        try:
+            response = requests.post(
+                f"{API_URL}/api/queries/natural",
+                json={"query": query, "session_id": session_id},
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("intent") == "forecast":
+                    print("✓ Forecast intent recognized")
+                    print(f"Response: {data.get('narrative', '')[:200]}...")
+                else:
+                    print(f"Intent: {data.get('intent')} (expected 'forecast')")
+            else:
+                print(f"✗ Error {response.status_code}")
+
+        except Exception as e:
+            print(f"✗ Request failed: {e}")
+
+    # Test anomaly detection queries
+    print("\n\n--- ANOMALY DETECTION TESTS ---")
     anomaly_queries = [
-        "Are there any anomalies in our financial data?",
-        "Show me unusual expense patterns",
-        "Detect outliers in revenue this year",
-        "Find any strange patterns in our finances",
+        "Are there any anomalies in our expenses?",
+        "Show me unusual revenue patterns",
+        "Detect outliers in financial data for 2024",
+        "Find any strange expense patterns this quarter",
     ]
 
-    print("\n\n🚨 TESTING ANOMALY DETECTION")
     for query in anomaly_queries:
+        print(f"\n🔍 {query}")
+
         try:
-            test_analytics_query(query, "Anomaly")
+            response = requests.post(
+                f"{API_URL}/api/queries/natural",
+                json={"query": query, "session_id": session_id},
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("intent") == "anomaly":
+                    print("✓ Anomaly intent recognized")
+                    print(f"Response: {data.get('narrative', '')[:200]}...")
+                else:
+                    print(f"Intent: {data.get('intent')} (expected 'anomaly')")
+            else:
+                print(f"✗ Error {response.status_code}")
+
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"✗ Request failed: {e}")
+
+    print(f"\n{'='*60}")
+    print("ANALYTICS TEST COMPLETE")
+    print(f"{'='*60}\n")
 
 
 if __name__ == "__main__":
-    main()
+    test_analytics()
