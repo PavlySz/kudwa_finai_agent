@@ -11,6 +11,3 @@ data/
 # Ignore markdown files (used for project planning) except README.md
 *.md
 !README.md
-
-# Ignore db files
-*.db
