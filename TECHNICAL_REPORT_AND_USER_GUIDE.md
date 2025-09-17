@@ -283,53 +283,6 @@ query = "Alert me to any unusual expense patterns this month"
 query = "Check for any anomalous revenue entries in Q1"
 ```
 
-### Best Practices
-
-1. **Be Specific with Time Periods**
-
-   - Good: "Revenue for Q1 2024"
-   - Better: "Total revenue from January to March 2024"
-
-2. **Use Clear Metrics**
-
-   - Specify "revenue", "expenses", "profit", "cash flow"
-   - Define "gross" vs "net" when relevant
-
-3. **Leverage Context**
-
-   - Use session IDs for follow-up questions
-   - Reference previous results: "What about expenses?" after revenue query
-
-4. **Check Data Availability**
-   - System will inform you if data is missing
-   - Provide all necessary data before complex analyses
-
-## Troubleshooting
-
-### Common Issues
-
-**"No data available"**
-
-- Ensure sample data is imported
-- Check date ranges in your query
-- Verify company ID if filtering
-
-**"Insufficient data for forecasting"**
-
-- Forecasting requires minimum 3 historical data points
-- Check if data spans requested time period
-
-**"Model not responding"**
-
-- Verify API keys are correct
-- Check internet connection
-- Try with a different model preference
-
-**Performance Issues**
-
-- Large date ranges may be slow
-- Complex comparisons take more time
-- Consider breaking into smaller queries
 
 ### Debug Mode
 
