@@ -13,13 +13,15 @@ from src.config.settings import settings
 database_url = settings.DATABASE_URL
 if database_url.startswith("postgresql://"):
     database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+elif database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
 
 # Fix SSL mode for asyncpg - it uses 'ssl' instead of 'sslmode'
 if "sslmode=require" in database_url:
     database_url = database_url.replace("sslmode=require", "ssl=require")
 
 engine: AsyncEngine = create_async_engine(
-    database_url, echo=settings.DEBUG, future=True
+    database_url, echo=False, future=True  # Disable echo for production security
 )
 
 # Create async session factory
