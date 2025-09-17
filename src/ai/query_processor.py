@@ -19,6 +19,7 @@ from langchain.schema import BaseMessage, SystemMessage, HumanMessage
 
 from src.config.settings import settings
 from src.ai.llm_client import MultiModelClient, QueryComplexity
+from src.analytics import FinancialForecaster, SimpleAnomalyDetector
 
 
 class QueryIntent(str, Enum):
@@ -30,6 +31,8 @@ class QueryIntent(str, Enum):
     TREND = "trend"  # Analyze trends over time
     RANKING = "ranking"  # Top/bottom N items
     CALCULATION = "calculation"  # Profit margins, ratios
+    FORECAST = "forecast"  # Predict future values
+    ANOMALY = "anomaly"  # Detect unusual patterns
 
 
 class TimeGranularity(str, Enum):
@@ -63,6 +66,9 @@ class ParsedQuery(BaseModel):
     aggregations: List[str] = Field(
         default_factory=list, description="Aggregation functions needed"
     )
+    original_query: Optional[str] = Field(
+        default=None, description="Original natural language query"
+    )
     limit: Optional[int] = Field(description="Limit for top/bottom queries")
     comparison_period: Optional[str] = Field(description="Period to compare against")
 
@@ -88,6 +94,8 @@ class QueryProcessor:
     def __init__(self, llm_client: Optional[MultiModelClient] = None):
         """Initialize with LLM client"""
         self.llm_client = llm_client or MultiModelClient()
+        self.forecaster = FinancialForecaster()
+        self.anomaly_detector = SimpleAnomalyDetector()
 
         # Common financial metric mappings
         self.metric_mappings = {
@@ -172,6 +180,15 @@ class QueryProcessor:
                 Available metrics: revenue, expenses, profit, cash flow, margins
                 Time periods: Can be specific dates, quarters (Q1-Q4), months, years, or relative (last N days/months)
                 
+                Intent types:
+                - lookup: Simple data retrieval
+                - aggregation: Sum, average, count
+                - comparison: Compare periods or metrics
+                - trend: Analyze trends over time
+                - calculation: Profit margins, ratios
+                - forecast: Predict future values (keywords: predict, forecast, project, will be)
+                - anomaly: Detect unusual patterns (keywords: unusual, anomaly, outlier, strange)
+                
                 {format_instructions}
                 
                 Current date: {current_date}
@@ -194,10 +211,13 @@ class QueryProcessor:
             output_schema=ParsedQuery,
             model_override=settings.COMPLEX_QUERY_MODEL,  # Use better model for parsing
         )
-        
+
         # Ensure result is a ParsedQuery instance
         if isinstance(result, dict):
             result = ParsedQuery(**result)
+
+        # Add original query
+        result.original_query = query
 
         # Post-process time periods
         if result.time_period and not result.time_start:
