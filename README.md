@@ -375,24 +375,46 @@ kudwa_assessment/
     └── test_evaluation_api.py
 ```
 
+
+## Deployment
+
+### Replit Deployment
+
+The system is currently deployed on Replit at: https://pavly-kudwa-finai-agent.replit.app
+
+To use the Replit deployment:
+
+1. Set `USE_REPLIT = True` in `src/config/settings.py`
+2. All test scripts will automatically use the Replit URL
+3. API documentation available at: https://pavly-kudwa-finai-agent.replit.app/docs
+
+### Switching Between Local and Replit
+
+The deployment mode is controlled by a single setting:
+
+```python
+# src/config/settings.py
+USE_REPLIT = False  # Local development
+# or
+USE_REPLIT = True   # Replit deployment
+```
+
 ## Next Steps and Future Improvements
 
 ### 1. Production Deployment
 
 **Docker & Containerization**
 
-- Multi-stage Dockerfile for optimized image size
+- Multi-stage Dockerfile
 - Docker Compose with PostgreSQL, Redis, and monitoring stack
 - Kubernetes manifests for cloud deployment
-- Health checks and auto-scaling policies
 
 **Infrastructure Improvements**
 
 - Migrate from SQLite to PostgreSQL for concurrent users
 - Redis for session storage and caching
-- Celery for async task processing (heavy analytics)
 - nginx reverse proxy with rate limiting
-- Monitoring with Prometheus/Grafana
+- Monitoring with Prometheus
 
 ### 2. Model & AI Improvements
 
@@ -402,12 +424,12 @@ kudwa_assessment/
 - Dynamic model selection based on query performance history
 - A/B testing framework for model comparison
 - Cost-benefit optimization algorithm
+- Stress-testing the routing
 
 **Better Context Management**
 
 - Vector database for long-term memory (ChromaDB/Pinecone)
 - Cross-session learning and insights
-- User preference learning
 - Automatic context summarization
 
 ### 3. Advanced Analytics
@@ -451,7 +473,6 @@ kudwa_assessment/
 
 - Direct QuickBooks API integration
 - Real-time data streaming
-- Budget vs actual analysis
 - Cash flow projections
 - Financial ratio calculations
 
@@ -460,43 +481,15 @@ kudwa_assessment/
 - Slack/Teams notifications
 - Email report generation
 - Calendar integration for periodic reports
-- Webhook support for third-party apps
 - Export to Excel/Google Sheets
 
-### 6. System Improvements
+### 6. Business Intelligence Features
 
-**Performance Optimization**
-
-- Query result caching layer
-- Prepared statement optimization
-- Connection pooling tuning
-- Async background processing
-- CDN for static assets
-
-**Security Enhancements**
-
-- OAuth2 authentication
-- Row-level security
-- Audit logging
-- Encryption at rest
-- API rate limiting per user
-
-**Developer Experience**
-
-- OpenAPI schema generation
-- SDK generation for multiple languages
-- Comprehensive API documentation
-- Postman collection
-- Development environment setup script
-
-### 7. Business Intelligence Features
-
-**Advanced Reporting**
+**Enhacned Reporting**
 
 - Custom dashboard builder
 - Scheduled report generation
 - KPI tracking and alerts
-- Comparative analysis tools
 - Data visualization library
 
 **Predictive Analytics**
@@ -506,51 +499,3 @@ kudwa_assessment/
 - Expense optimization suggestions
 - Cash flow risk assessment
 - Seasonal trend analysis
-
-### 8. Potential Architecture Improvements
-
-**Microservices Migration**
-
-- Separate services for query processing, analytics, data import
-- Event-driven architecture with Kafka/RabbitMQ
-- Independent scaling of components
-- Service mesh for communication
-
-**Data Pipeline**
-
-- Apache Airflow for ETL orchestration
-- Data lake for raw financial data
-- Data warehouse for analytics
-- Real-time streaming with Kafka
-- Change data capture from source systems
-
-These improvements would transform the POC into a production-ready, enterprise-grade financial intelligence platform. The modular architecture allows for incremental implementation based on business priorities and resource availability.
-
-## Deployment
-
-### Replit Deployment
-
-The system is currently deployed on Replit at: https://pavly-kudwa-finai-agent.replit.app
-
-To use the Replit deployment:
-
-1. Set `USE_REPLIT = True` in `src/config/settings.py`
-2. All test scripts will automatically use the Replit URL
-3. API documentation available at: https://pavly-kudwa-finai-agent.replit.app/docs
-
-### Switching Between Local and Replit
-
-The deployment mode is controlled by a single setting:
-
-```python
-# src/config/settings.py
-USE_REPLIT = False  # Local development
-# or
-USE_REPLIT = True   # Replit deployment
-```
-
-This affects:
-
-- API URL used by all test scripts
-- CORS settings (if configured)
-- Database location (if different)
